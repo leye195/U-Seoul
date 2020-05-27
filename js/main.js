@@ -87,7 +87,7 @@
     for (let i = 0; i < 500; i++) {
       const img = new Image(),
         cnt = String(1 + i);
-      img.src = `video/videoplay/${
+      img.src = `./video/videoplay/${
         cnt.length === 3
           ? `0${cnt}`
           : cnt.length === 2
