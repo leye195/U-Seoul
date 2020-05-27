@@ -359,7 +359,9 @@
     context.drawImage(videoImage[0], 0, 0);
     document.body.setAttribute("id", `show-section-${currentSection}`);
   });
-  window.addEventListener("resize", setLayout);
+  window.addEventListener("resize", () => {
+    setLayout();
+  });
   window.addEventListener("scroll", handleScroll);
   setCanvasImages();
 })();

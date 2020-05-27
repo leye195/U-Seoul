@@ -1,0 +1,52 @@
+.loading-container {
+  display: none;
+}
+#loading .loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(255, 255, 255);
+  opacity: 1;
+  transition: opacity 1s;
+}
+
+@keyframes loadingCircle {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.loading-circle {
+  width: 54px;
+  height: 54px;
+  animation: loadingCircle 3s infinite;
+}
+@keyframes loadingAni {
+  0% {
+    stroke-dashoffset: 157;
+  }
+  70% {
+    stroke-dashoffset: -142;
+  }
+  100% {
+    stroke-dashoffset: -157;
+  }
+}
+.loading-circle circle {
+  stroke: black;
+  stroke-width: 4;
+  fill: transparent;
+  stroke-dasharray: 157;
+  stroke-dashoffset: -157;
+  animation: loadingAni 1.1s ease-in-out infinite;
+}

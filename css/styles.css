@@ -136,7 +136,7 @@ a {
   z-index: 0;
 }
 
-#loading {
+#loading .container {
   display: none;
 }
 .img-container {
