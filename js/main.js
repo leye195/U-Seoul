@@ -355,6 +355,7 @@
     const {
       objs: { context, videoImage },
     } = sceneInfo[0];
+    document.body.classList.remove("loading");
     setLayout();
     context.drawImage(videoImage[0], 0, 0);
     document.body.setAttribute("id", `show-section-${currentSection}`);
@@ -363,5 +364,10 @@
     setLayout();
   });
   window.addEventListener("scroll", handleScroll);
+  document
+    .querySelector(".loading-container")
+    .addEventListener("transitionend", (e) => {
+      document.body.removeChild(e.currentTarget);
+    });
   setCanvasImages();
 })();
