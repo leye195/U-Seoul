@@ -116,6 +116,7 @@ a {
   color: white;
   text-shadow: 1px 1px 20px black;
   font-weight: 700;
+  z-index: 0;
 }
 #scroll-2 .sticky-elem strong {
   font-size: 3rem;
@@ -205,6 +206,7 @@ a {
   left: 0;
   opacity: 0;
 }
+
 .card-container {
   display: flex;
   width: 80vw;
@@ -223,6 +225,7 @@ a {
   height: 100%;
   width: 100%;
   border-radius: 20px;
+  box-shadow: 1px 1px 3px 3px #424242b8;
 }
 .footer {
   height: 5rem;

@@ -63,14 +63,22 @@
         elemAOpacityOut: [1, 0, { start: 0.15, end: 0.25 }],
         elemATranslateIn: [-10, 0, { start: 0.0, end: 0.1 }],
         elemATranslateOut: [0, 10, { start: 0.15, end: 0.25 }],
+        elemAZIndexUp: [0, 10, { start: 0.0, end: 0.1 }],
+        elemAZIndexDown: [10, 0, { start: 0.15, end: 0.25 }],
+
         elemBOpacityIn: [0, 1, { start: 0.3, end: 0.4 }],
         elemBOpacityOut: [1, 0, { start: 0.45, end: 0.55 }],
         elemBTranslateIn: [-10, 0, { start: 0.3, end: 0.4 }],
         elemBTranslateOut: [0, 10, { start: 0.45, end: 0.55 }],
+        elemBZIndexUp: [0, 10, { start: 0.3, end: 0.4 }],
+        elemBZIndexDown: [10, 0, { start: 0.45, end: 0.55 }],
+
         elemCOpacityIn: [0, 1, { start: 0.6, end: 0.7 }],
         elemCOpacityOut: [1, 0, { start: 0.75, end: 1 }],
         elemCTranslateIn: [-10, 0, { start: 0.6, end: 0.7 }],
         elemCTranslateOut: [0, 10, { start: 0.75, end: 1 }],
+        elemCZIndexUp: [0, 10, { start: 0.6, end: 0.7 }],
+        elemCZIndexDown: [0, 10, { start: 0.75, end: 0.1 }],
       },
     },
     {
@@ -188,8 +196,9 @@
         sceneInfo[2].objs.canvas.style.opacity = "0";
         break;
       case 2:
-        const widthRatio = window.innerWidth / objs.canvas.width,
-          heightRatio = window.innerHeight / objs.canvas.height;
+        //const widthRatio = window.innerWidth / objs.canvas.width,
+        //heightRatio = window.innerHeight / objs.canvas.height;
+        //canvas 이미지 전환
         if (scrollRatio <= 0.25) {
           objs.context.drawImage(
             objs.blendImages[0],
@@ -215,6 +224,7 @@
             objs.canvas.height
           );
         }
+        //구간별 효과
         if (scrollRatio <= 0.12) {
           objs.canvas.style.opacity = `${calcValues(
             values.elemAOpacityIn,
@@ -228,6 +238,10 @@
             values.elemATranslateIn,
             currentOffset
           )}%,0)`;
+          objs.elemA.style.zIndex = `${calcValues(
+            values.elemAZIndexUp,
+            currentOffset
+          )}`;
         } else {
           objs.canvas.style.opacity = `${calcValues(
             values.elemAOpacityOut,
@@ -236,11 +250,15 @@
           objs.elemA.style.opacity = `${calcValues(
             values.elemAOpacityOut,
             currentOffset
-          )}`;
+          )}`; //opacity 1~0
           objs.elemA.style.transform = `translate3d(0,${calcValues(
             values.elemATranslateOut,
             currentOffset
-          )}%,0)`;
+          )}%,0)`; //translate 변환
+          objs.elemA.style.zIndex = `${calcValues(
+            values.elemAZIndexDown,
+            currentOffset
+          )}`; //z-index 10~0
         }
         if (scrollRatio <= 0.42) {
           if (scrollRatio >= 0.3) {
@@ -257,6 +275,10 @@
             values.elemBTranslateIn,
             currentOffset
           )}%,0)`;
+          objs.elemB.style.zIndex = `${calcValues(
+            values.elemBZIndexUp,
+            currentOffset
+          )}`;
         } else {
           objs.canvas.style.opacity = `${calcValues(
             values.elemBOpacityOut,
@@ -270,6 +292,10 @@
             values.elemBTranslateOut,
             currentOffset
           )}%,0)`;
+          objs.elemB.style.zIndex = `${calcValues(
+            values.elemBZIndexDown,
+            currentOffset
+          )}`;
         }
         if (scrollRatio <= 0.72) {
           if (scrollRatio >= 0.6) {
@@ -286,6 +312,10 @@
             values.elemCTranslateIn,
             currentOffset
           )}%,0)`;
+          objs.elemC.style.zIndex = `${calcValues(
+            values.elemCZIndexUp,
+            currentOffset
+          )}`;
         } else {
           objs.canvas.style.opacity = `${calcValues(
             values.elemCOpacityOut,
@@ -299,6 +329,7 @@
             values.elemCTranslateOut,
             currentOffset
           )}%,0)`;
+          objs.elemC.style.zIndex = `0`;
         }
         break;
     }
