@@ -1,7 +1,11 @@
 (() => {
   let yOffset = 0,
     currentSection = 0,
-    prevScroll = 0;
+    prevScroll = 0,
+    delayedOffset = 0,
+    ref = null,
+    refState = false;
+  const acc = 0.3;
   const sceneInfo = [
     {
       type: "sticky",
@@ -142,12 +146,13 @@
     const currentOffset = yOffSet - prevScroll >= 0 && yOffSet - prevScroll;
     const scrollRatio = currentOffset / scrollHeight;
     //console.log(currentOffset, values.imgSequence);
+    //console.log(currentOffset, yOffset);
     let sequence = values?.imgSequence
       ? Math.round(calcValues(values.imgSequence, currentOffset))
       : 0;
     switch (currentSection) {
       case 0:
-        //console.log(sequence, scrollRatio, prevScroll);
+        if (sequence >= values.imgCount) sequence = values.imgSequence[1];
         objs.context.drawImage(objs.videoImage[sequence], 0, 0);
         objs.canvas.style.opacity = `${calcValues(
           values.canvasOpacity,
@@ -358,7 +363,7 @@
         break;
       }
     }
-    const heightRatio = window.innerHeight / 1080;
+    //const heightRatio = window.innerHeight / 1080;
     sceneInfo[0].objs.canvas.style.transform = `translate3d(-50%,-50%,0px) `;
   };
   const scrollEvent = () => {
@@ -366,39 +371,66 @@
     for (let i = 0; i < currentSection; i++) {
       prevScroll += sceneInfo[i].scrollHeight;
     }
-    if (yOffSet > prevScroll + sceneInfo[currentSection].scrollHeight) {
+    //console.log(delayedOffset, pageYOffset);
+    if (delayedOffset > prevScroll + sceneInfo[currentSection].scrollHeight) {
       currentSection += 1;
-    } else if (yOffSet >= 0 && yOffSet <= prevScroll) {
+    } else if (delayedOffset >= 0 && delayedOffset <= prevScroll) {
       currentSection > 0 && currentSection--;
     }
     if (document.body.getAttribute("id") !== `show-section-${currentSection}`) {
       document.body.setAttribute("id", `show-section-${currentSection}`);
     } else {
-      //console.log(pageYOffset, prevScroll, currentSection);
       playAnimation();
     }
   };
   const handleScroll = (e) => {
     yOffSet = window.pageYOffset;
     scrollEvent();
+    if (!refState) {
+      requestAnimationFrame(loop);
+      refState = true;
+    }
   };
-  window.addEventListener("load", () => {
-    const {
-      objs: { context, videoImage },
-    } = sceneInfo[0];
-    document.body.classList.remove("loading");
-    setLayout();
-    context.drawImage(videoImage[0], 0, 0);
-    document.body.setAttribute("id", `show-section-${currentSection}`);
-  });
-  window.addEventListener("resize", () => {
-    setLayout();
-  });
-  window.addEventListener("scroll", handleScroll);
-  document
-    .querySelector(".loading-container")
-    .addEventListener("transitionend", (e) => {
-      document.body.removeChild(e.currentTarget);
+  const loop = () => {
+    delayedOffset = delayedOffset + (window.pageYOffset - delayedOffset) * acc;
+    if (currentSection === 0) {
+      const { values, objs } = sceneInfo[currentSection],
+        currentOffset = delayedOffset - prevScroll;
+      let sequence = values?.imgSequence
+        ? Math.round(calcValues(values.imgSequence, currentOffset))
+        : 0;
+      if (objs.videoImage[sequence])
+        objs.context.drawImage(objs.videoImage[sequence], 0, 0);
+    }
+    ref = requestAnimationFrame(loop); //requestAnimationFrame 실행
+    if (Math.abs(window.pageYOffset - delayedOffset) < 1) {
+      //pageYOffset 값과 delatOffset 값이 거의 비슷해질 경우
+      //console.log("cancel");
+      cancelAnimationFrame(ref); //AnimationFrame 취소
+      refState = false;
+    }
+  };
+  const init = () => {
+    window.addEventListener("load", () => {
+      const {
+        objs: { context, videoImage },
+      } = sceneInfo[0];
+      document.body.classList.remove("loading");
+      setLayout();
+      context.drawImage(videoImage[0], 0, 0);
+      document.body.setAttribute("id", `show-section-${currentSection}`);
+      window.addEventListener("resize", () => {
+        setLayout();
+      });
+      window.addEventListener("scroll", handleScroll);
+      document
+        .querySelector(".loading-container")
+        .addEventListener("transitionend", (e) => {
+          document.body.removeChild(e.currentTarget);
+        });
+      window.addEventListener("orientationchange", setLayout);
     });
-  setCanvasImages();
+    setCanvasImages();
+  };
+  init();
 })();
