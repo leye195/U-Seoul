@@ -60,7 +60,11 @@
         context: document
           .querySelector("#image-blending-canvas")
           .getContext("2d"),
-        blendImages: ["./images/1.jpg", "./images/2.jpg", "./images/3.jpg"],
+        blendImages: [
+          "./assets/images/1.jpg",
+          "./assets/images/2.jpg",
+          "./assets/images/3.jpg",
+        ],
       },
       values: {
         elemAOpacityIn: [0, 1, { start: 0, end: 0.1 }],
